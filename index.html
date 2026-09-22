@@ -1,163 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>One Button</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Don't Press It</title>
 
-<style>
-body {
-  margin: 0;
-  background: #111;
-  color: white;
-  font-family: Arial;
-  text-align: center;
-}
+  <style>
+    body {
+      margin: 0;
+      background: #111;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
 
-h1 {
-  margin: 15px 0 5px;
-}
+    h1 {
+      margin-top: 50px;
+    }
 
-#score {
-  margin-bottom: 10px;
-}
+    #message {
+      font-size: 24px;
+      margin: 40px 20px;
+    }
 
-canvas {
-  width: 95%;
-  max-width: 800px;
-  border: 2px solid white;
-  background: #222;
-}
+    #button {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      color: black;
+      font-size: 28px;
+      font-weight: bold;
+    }
 
-button {
-  margin-top: 15px;
-  width: 220px;
-  height: 70px;
-  font-size: 25px;
-  font-weight: bold;
-  border: none;
-  border-radius: 15px;
-}
-</style>
+    #counter {
+      margin-top: 30px;
+      font-size: 18px;
+    }
+  </style>
 </head>
 
 <body>
 
-<h1>ONE BUTTON</h1>
-<div id="score">Score: 0</div>
+  <h1>DON'T PRESS IT</h1>
 
-<canvas id="game" width="800" height="450"></canvas>
+  <div id="message">
+    Whatever you do...<br>
+    DON'T PRESS THE BUTTON.
+  </div>
 
-<button onclick="jump()">JUMP</button>
+  <button id="button">DON'T</button>
 
-<script>
+  <div id="counter">
+    Presses: 0
+  </div>
 
-const canvas = document.getElementById("game");
-const ctx = canvas.getContext("2d");
+  <script>
 
-let player = {
-  x: 100,
-  y: 350,
-  size: 35,
-  velocity: 0
-};
+    let presses = 0;
 
-let obstacle = {
-  x: 800,
-  y: 350,
-  width: 40,
-  height: 70
-};
+    const button = document.getElementById("button");
+    const message = document.getElementById("message");
+    const counter = document.getElementById("counter");
 
-let score = 0;
-let gameOver = false;
+    button.addEventListener("click", function() {
 
-function jump() {
-  if (gameOver) {
-    location.reload();
-    return;
-  }
+      presses++;
 
-  if (player.y >= 350) {
-    player.velocity = -10;
-  }
-}
+      counter.textContent = "Presses: " + presses;
 
-function gameLoop() {
+      if (presses === 1) {
+        message.innerHTML = "I TOLD YOU NOT TO.";
+      }
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (presses === 2) {
+        message.innerHTML = "Seriously. Stop.";
+      }
 
-  if (!gameOver) {
+      if (presses === 3) {
+        message.innerHTML = "Why are you still doing this?";
+      }
 
-    // Gravity
-    player.velocity += 0.5;
-    player.y += player.velocity;
+      if (presses === 4) {
+        button.textContent = "STOP";
+        message.innerHTML = "Okay. Last warning.";
+      }
 
-    // Ground
-    if (player.y > 350) {
-      player.y = 350;
-      player.velocity = 0;
-    }
+      if (presses === 5) {
+        button.style.transform = "scale(0.7)";
+        message.innerHTML = "You really don't listen.";
+      }
 
-    // Move obstacle
-    obstacle.x -= 6;
+    });
 
-    // Reset obstacle
-    if (obstacle.x < -50) {
-      obstacle.x = 800;
-      score++;
-    }
-
-    // Collision
-    if (
-      player.x < obstacle.x + obstacle.width &&
-      player.x + player.size > obstacle.x &&
-      player.y < obstacle.y + obstacle.height &&
-      player.y + player.size > obstacle.y
-    ) {
-      gameOver = true;
-    }
-
-    document.getElementById("score").textContent =
-      "Score: " + score;
-  }
-
-  // Player
-  ctx.fillStyle = "white";
-  ctx.fillRect(
-    player.x,
-    player.y,
-    player.size,
-    player.size
-  );
-
-  // Ground
-  ctx.fillStyle = "#555";
-  ctx.fillRect(0, 385, 800, 65);
-
-  // Obstacle
-  ctx.fillStyle = "red";
-  ctx.fillRect(
-    obstacle.x,
-    obstacle.y,
-    obstacle.width,
-    obstacle.height
-  );
-
-  if (gameOver) {
-    ctx.fillStyle = "white";
-    ctx.font = "40px Arial";
-    ctx.fillText("GAME OVER", 280, 200);
-
-    ctx.font = "20px Arial";
-    ctx.fillText("Press JUMP to restart", 295, 240);
-  }
-
-  requestAnimationFrame(gameLoop);
-}
-
-gameLoop();
-
-</script>
+  </script>
 
 </body>
 </html>
+
