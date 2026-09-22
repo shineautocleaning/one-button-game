@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DON'T PRESS IT</title>
+<title>Kingston Klicker</title>
 
 <style>
 * {
@@ -11,461 +11,489 @@
 
 body {
   margin: 0;
-  background: #111;
+  background: #171717;
   color: white;
   font-family: Arial, sans-serif;
-  text-align: center;
-  overflow: hidden;
-  transition: background 0.3s;
+  overflow-x: hidden;
 }
 
-h1 {
-  margin: 25px 0 5px;
-  font-size: 32px;
-}
-
-#message {
-  min-height: 70px;
-  font-size: 21px;
-  padding: 10px 20px;
-}
-
-#stats {
-  font-size: 17px;
-  margin: 10px;
-}
-
-#game {
-  position: relative;
-  width: 100%;
-  height: 470px;
-}
-
-button {
-  font-family: Arial, sans-serif;
-  font-weight: bold;
-  cursor: pointer;
-}
-
-#mainButton {
-  position: absolute;
-  width: 210px;
-  height: 210px;
-  border-radius: 50%;
-  border: 0;
-  background: white;
-  color: #111;
-  font-size: 27px;
-  left: 50%;
-  top: 180px;
-  transform: translateX(-50%);
-  transition: all 0.15s;
-  box-shadow: 0 0 30px rgba(255,255,255,0.25);
-}
-
-.fake {
-  position: absolute;
-  width: 90px;
+header {
   height: 55px;
-  border: 0;
-  border-radius: 12px;
-  background: #444;
-  color: white;
+  background: #101010;
+  border-bottom: 2px solid #444;
+  display: flex;
+  align-items: center;
+  padding: 0 18px;
+  gap: 28px;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+header span {
+  color: #aaa;
   font-size: 15px;
 }
 
-#start {
-  width: 230px;
-  height: 65px;
-  border: 0;
-  border-radius: 15px;
-  font-size: 23px;
-  background: white;
-  color: #111;
+#game {
+  display: flex;
+  min-height: calc(100vh - 55px);
 }
 
-#timer {
-  font-size: 25px;
+#main {
+  flex: 1;
+  text-align: center;
+  padding-top: 25px;
+  position: relative;
+}
+
+#currencyName {
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#kingstons {
+  font-size: 52px;
+  font-weight: bold;
+  margin: 5px;
+}
+
+#perSecond {
+  color: #aaa;
+  font-size: 18px;
+}
+
+#clickArea {
+  height: 520px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#kingston {
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  border: 8px solid #777;
+  background: radial-gradient(circle, #ddd, #777);
+  box-shadow: 0 0 50px rgba(255,255,255,0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 70px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.08s;
+}
+
+#kingston:active {
+  transform: scale(0.94);
+}
+
+#placeholder {
+  font-size: 30px;
+  color: #222;
+  font-weight: bold;
+}
+
+#store {
+  width: 380px;
+  background: #242424;
+  border-left: 3px solid #555;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+#store h2 {
+  text-align: center;
+  margin: 5px 0 15px;
+  font-size: 30px;
+}
+
+.item {
+  background: #343434;
+  border: 2px solid #555;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 9px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+}
+
+.item:hover {
+  background: #404040;
+}
+
+.item.disabled {
+  opacity: 0.45;
+}
+
+.itemIcon {
+  width: 55px;
+  height: 55px;
+  background: #555;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 27px;
+}
+
+.itemInfo {
+  flex: 1;
+  text-align: left;
+}
+
+.itemName {
+  font-size: 19px;
+  font-weight: bold;
+}
+
+.itemDescription {
+  color: #aaa;
+  font-size: 13px;
+  margin-top: 4px;
+}
+
+.itemPrice {
+  color: #8cff70;
+  font-weight: bold;
   margin-top: 5px;
 }
 
-.shake {
-  animation: shake 0.2s;
+.itemOwned {
+  color: #aaa;
+  font-size: 13px;
 }
 
-@keyframes shake {
-  0% { transform: translate(0); }
-  25% { transform: translate(8px, -5px); }
-  50% { transform: translate(-8px, 5px); }
-  75% { transform: translate(5px, 5px); }
-  100% { transform: translate(0); }
-}
-
-.flash {
-  background: #eee !important;
-}
-
-#ending {
-  display: none;
+#bottom {
   position: fixed;
-  inset: 0;
-  background: #111;
-  z-index: 10;
-  padding-top: 120px;
+  bottom: 0;
+  left: 0;
+  right: 380px;
+  background: #101010;
+  border-top: 2px solid #444;
+  padding: 8px;
+  text-align: center;
+  color: #aaa;
+  font-size: 13px;
 }
 
-#ending h2 {
-  font-size: 42px;
-}
+@media (max-width: 750px) {
 
-#restart {
-  width: 220px;
-  height: 60px;
-  border: 0;
-  border-radius: 14px;
-  font-size: 22px;
+  #game {
+    display: block;
+  }
+
+  #store {
+    width: 100%;
+    border-left: 0;
+    border-top: 3px solid #555;
+  }
+
+  #clickArea {
+    height: 380px;
+  }
+
+  #kingston {
+    width: 240px;
+    height: 240px;
+  }
+
+  #bottom {
+    position: static;
+  }
 }
 </style>
 </head>
 
 <body>
 
-<h1>DON'T PRESS IT</h1>
-
-<div id="message">
-  Whatever you do...<br>
-  DON'T PRESS THE BUTTON.
-</div>
-
-<div id="stats">
-  Stage: <span id="stage">0</span>
-  &nbsp; | &nbsp;
-  Presses: <span id="presses">0</span>
-  &nbsp; | &nbsp;
-  Lives: <span id="lives">3</span>
-</div>
-
-<div id="timer"></div>
+<header>
+  <h1>Kingston Klicker</h1>
+  <span>Options</span>
+  <span>Stats</span>
+  <span>Achievements</span>
+</header>
 
 <div id="game">
 
-  <button id="mainButton">DON'T</button>
+  <main id="main">
+
+    <div id="currencyName">KINGSTONS</div>
+    <div id="kingstons">0</div>
+    <div id="perSecond">per second: 0</div>
+
+    <div id="clickArea">
+
+      <div id="kingston">
+        <div id="placeholder">KINGSTON</div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <aside id="store">
+
+    <h2>STORE</h2>
+
+    <div id="storeItems"></div>
+
+  </aside>
 
 </div>
 
-<div id="ending">
-  <h2 id="endingTitle"></h2>
-  <p id="endingText"></p>
-  <button id="restart">PLAY AGAIN</button>
+<div id="bottom">
+  Kingston Klicker v0.1 — Click Kingston to get Kingstons.
 </div>
 
 <script>
 
-const mainButton = document.getElementById("mainButton");
-const message = document.getElementById("message");
-const stageText = document.getElementById("stage");
-const pressesText = document.getElementById("presses");
-const livesText = document.getElementById("lives");
-const timerText = document.getElementById("timer");
-const game = document.getElementById("game");
+let kingstons = 0;
+let totalKingstons = 0;
+let clickPower = 1;
 
-const ending = document.getElementById("ending");
-const endingTitle = document.getElementById("endingTitle");
-const endingText = document.getElementById("endingText");
-const restart = document.getElementById("restart");
+const buildings = [
 
-let stage = 0;
-let presses = 0;
-let lives = 3;
-let timer = null;
-let timeLeft = 0;
-let playing = false;
+  {
+    name: "Cursor",
+    description: "Automatically clicks Kingston.",
+    basePrice: 15,
+    production: 0.1,
+    owned: 0,
+    icon: "☝️"
+  },
 
-function startGame() {
+  {
+    name: "Kingston Farm",
+    description: "Produces Kingstons.",
+    basePrice: 100,
+    production: 1,
+    owned: 0,
+    icon: "🌱"
+  },
 
-  stage = 1;
-  presses = 0;
-  lives = 3;
-  playing = true;
+  {
+    name: "Kingston Mine",
+    description: "Digs up more Kingstons.",
+    basePrice: 500,
+    production: 5,
+    owned: 0,
+    icon: "⛏️"
+  },
 
-  ending.style.display = "none";
+  {
+    name: "Kingston Factory",
+    description: "Mass-produces Kingstons.",
+    basePrice: 2500,
+    production: 20,
+    owned: 0,
+    icon: "🏭"
+  },
 
-  updateStats();
-  setupStage();
+  {
+    name: "Kingston Bank",
+    description: "Turns money into more Kingstons.",
+    basePrice: 15000,
+    production: 80,
+    owned: 0,
+    icon: "🏦"
+  },
+
+  {
+    name: "Kingston Spaceport",
+    description: "Imports Kingstons from space.",
+    basePrice: 100000,
+    production: 400,
+    owned: 0,
+    icon: "🚀"
+  }
+
+];
+
+const kingstonButton = document.getElementById("kingston");
+
+kingstonButton.addEventListener("click", () => {
+
+  kingstons += clickPower;
+  totalKingstons += clickPower;
+
+  update();
+
+});
+
+function getPrice(building) {
+
+  return Math.floor(
+    building.basePrice *
+    Math.pow(1.15, building.owned)
+  );
 
 }
 
-function updateStats() {
+function buyBuilding(index) {
 
-  stageText.textContent = stage;
-  pressesText.textContent = presses;
-  livesText.textContent = lives;
+  const building = buildings[index];
+  const price = getPrice(building);
+
+  if (kingstons >= price) {
+
+    kingstons -= price;
+    building.owned++;
+
+    update();
+    saveGame();
+
+  }
 
 }
 
-function setupStage() {
+function getPerSecond() {
 
-  clearInterval(timer);
+  let total = 0;
 
-  document.querySelectorAll(".fake").forEach(x => x.remove());
+  buildings.forEach(building => {
 
-  mainButton.style.position = "absolute";
-  mainButton.style.width = "210px";
-  mainButton.style.height = "210px";
-  mainButton.style.left = "50%";
-  mainButton.style.top = "180px";
-  mainButton.style.transform = "translateX(-50%)";
-  mainButton.textContent = "DON'T";
+    total += building.production * building.owned;
 
-  if (stage === 1) {
+  });
 
-    message.innerHTML = "Stage 1<br>Surely you won't press it.";
-
-  }
-
-  if (stage === 2) {
-
-    message.innerHTML = "Stage 2<br>Okay... you pressed it.";
-
-    mainButton.textContent = "PRESS";
-
-  }
-
-  if (stage === 3) {
-
-    message.innerHTML = "Stage 3<br>The button is getting nervous.";
-
-    mainButton.style.width = "150px";
-    mainButton.style.height = "150px";
-
-  }
-
-  if (stage === 4) {
-
-    message.innerHTML = "Stage 4<br>Find the real button.";
-
-    createFakeButtons();
-
-  }
-
-  if (stage === 5) {
-
-    message.innerHTML = "Stage 5<br>You have 8 seconds.";
-
-    timeLeft = 8;
-    timerText.textContent = "TIME: " + timeLeft;
-
-    timer = setInterval(() => {
-
-      timeLeft--;
-
-      timerText.textContent = "TIME: " + timeLeft;
-
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        loseLife();
-      }
-
-    }, 1000);
-
-  }
-
-  if (stage === 6) {
-
-    message.innerHTML = "Stage 6<br>DON'T trust the button.";
-
-    mainButton.textContent = "DON'T";
-    mainButton.style.background = "#222";
-    mainButton.style.color = "white";
-
-  }
-
-  if (stage === 7) {
-
-    message.innerHTML = "Stage 7<br>Last stage... probably.";
-
-    mainButton.style.width = "100px";
-    mainButton.style.height = "100px";
-    mainButton.style.fontSize = "16px";
-
-  }
-
-  updateStats();
+  return total;
 
 }
 
-function pressMainButton() {
+function createStore() {
 
-  if (!playing) return;
+  const store = document.getElementById("storeItems");
 
-  presses++;
-  updateStats();
+  store.innerHTML = "";
 
-  document.body.classList.add("shake");
+  buildings.forEach((building, index) => {
 
-  setTimeout(() => {
-    document.body.classList.remove("shake");
-  }, 200);
+    const price = getPrice(building);
 
-  if (stage === 1) {
+    const item = document.createElement("div");
 
-    message.innerHTML = "I TOLD YOU NOT TO.";
+    item.className = "item";
 
-  }
-
-  else if (stage === 2) {
-
-    message.innerHTML = "Again? Really?";
-
-  }
-
-  else if (stage === 3) {
-
-    message.innerHTML = "It's smaller now.";
-
-  }
-
-  else if (stage === 4) {
-
-    message.innerHTML = "You found the real one.";
-
-  }
-
-  else if (stage === 5) {
-
-    clearInterval(timer);
-    timerText.textContent = "";
-    message.innerHTML = "You made it in time.";
-
-  }
-
-  else if (stage === 6) {
-
-    message.innerHTML = "I warned you.";
-
-    mainButton.style.transform =
-      "translateX(-50%) rotate(180deg)";
-
-  }
-
-  else if (stage === 7) {
-
-    winGame();
-    return;
-
-  }
-
-  setTimeout(() => {
-
-    if (stage < 7) {
-
-      stage++;
-      setupStage();
-
+    if (kingstons < price) {
+      item.classList.add("disabled");
     }
 
-  }, 700);
+    item.innerHTML = `
+      <div class="itemIcon">${building.icon}</div>
 
-}
+      <div class="itemInfo">
 
-function createFakeButtons() {
+        <div class="itemName">
+          ${building.name}
+        </div>
 
-  const positions = [
+        <div class="itemDescription">
+          ${building.description}
+        </div>
 
-    ["10%", "100px"],
-    ["70%", "120px"],
-    ["20%", "300px"],
-    ["75%", "310px"]
+        <div class="itemPrice">
+          ${price.toLocaleString()} Kingstons
+        </div>
 
-  ];
+        <div class="itemOwned">
+          Owned: ${building.owned}
+        </div>
 
-  positions.forEach(pos => {
+      </div>
+    `;
 
-    const fake = document.createElement("button");
+    item.onclick = () => buyBuilding(index);
 
-    fake.className = "fake";
-    fake.textContent = "PRESS";
-    fake.style.left = pos[0];
-    fake.style.top = pos[1];
-
-    fake.onclick = () => {
-
-      lives--;
-
-      updateStats();
-
-      message.innerHTML = "NOPE. FAKE BUTTON.";
-
-      if (lives <= 0) {
-        loseGame();
-      }
-
-    };
-
-    game.appendChild(fake);
+    store.appendChild(item);
 
   });
 
 }
 
-function loseLife() {
+function update() {
 
-  lives--;
-  updateStats();
+  document.getElementById("kingstons").textContent =
+    Math.floor(kingstons).toLocaleString();
 
-  if (lives <= 0) {
+  document.getElementById("perSecond").textContent =
+    "per second: " +
+    getPerSecond().toFixed(1);
 
-    loseGame();
+  createStore();
 
-  } else {
+}
 
-    message.innerHTML =
-      "You ran out of time.<br>One life lost.";
+setInterval(() => {
 
-    stage++;
+  const amount = getPerSecond() / 10;
 
-    setTimeout(setupStage, 900);
+  kingstons += amount;
+  totalKingstons += amount;
+
+  update();
+
+}, 100);
+
+function saveGame() {
+
+  const save = {
+
+    kingstons,
+    totalKingstons,
+    clickPower,
+
+    buildings: buildings.map(building => ({
+      owned: building.owned
+    }))
+
+  };
+
+  localStorage.setItem(
+    "kingstonKlickerSave",
+    JSON.stringify(save)
+  );
+
+}
+
+function loadGame() {
+
+  const saved =
+    localStorage.getItem("kingstonKlickerSave");
+
+  if (!saved) return;
+
+  const data = JSON.parse(saved);
+
+  kingstons = data.kingstons || 0;
+  totalKingstons = data.totalKingstons || 0;
+  clickPower = data.clickPower || 1;
+
+  if (data.buildings) {
+
+    data.buildings.forEach((savedBuilding, index) => {
+
+      if (buildings[index]) {
+        buildings[index].owned =
+          savedBuilding.owned || 0;
+      }
+
+    });
 
   }
 
 }
 
-function winGame() {
+setInterval(saveGame, 5000);
 
-  playing = false;
-  clearInterval(timer);
-
-  ending.style.display = "block";
-
-  endingTitle.textContent = "YOU DID IT.";
-
-  endingText.innerHTML =
-    "You pressed the button " +
-    presses +
-    " times.<br><br>" +
-    "But there's something you haven't found yet...";
-
-}
-
-function loseGame() {
-
-  playing = false;
-  clearInterval(timer);
-
-  ending.style.display = "block";
-
-  endingTitle.textContent = "GAME OVER";
-
-  endingText.textContent =
-    "You couldn't resist the button.";
-
-}
-
-mainButton.onclick = pressMainButton;
-
-restart.onclick = startGame;
-
-startGame();
+loadGame();
+update();
 
 </script>
 
