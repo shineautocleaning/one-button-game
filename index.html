@@ -1,100 +1,473 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Don't Press It</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DON'T PRESS IT</title>
 
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    h1 {
-      margin-top: 50px;
-    }
+body {
+  margin: 0;
+  background: #111;
+  color: white;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  overflow: hidden;
+  transition: background 0.3s;
+}
 
-    #message {
-      font-size: 24px;
-      margin: 40px 20px;
-    }
+h1 {
+  margin: 25px 0 5px;
+  font-size: 32px;
+}
 
-    #button {
-      width: 220px;
-      height: 220px;
-      border-radius: 50%;
-      border: none;
-      background: white;
-      color: black;
-      font-size: 28px;
-      font-weight: bold;
-    }
+#message {
+  min-height: 70px;
+  font-size: 21px;
+  padding: 10px 20px;
+}
 
-    #counter {
-      margin-top: 30px;
-      font-size: 18px;
-    }
-  </style>
+#stats {
+  font-size: 17px;
+  margin: 10px;
+}
+
+#game {
+  position: relative;
+  width: 100%;
+  height: 470px;
+}
+
+button {
+  font-family: Arial, sans-serif;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#mainButton {
+  position: absolute;
+  width: 210px;
+  height: 210px;
+  border-radius: 50%;
+  border: 0;
+  background: white;
+  color: #111;
+  font-size: 27px;
+  left: 50%;
+  top: 180px;
+  transform: translateX(-50%);
+  transition: all 0.15s;
+  box-shadow: 0 0 30px rgba(255,255,255,0.25);
+}
+
+.fake {
+  position: absolute;
+  width: 90px;
+  height: 55px;
+  border: 0;
+  border-radius: 12px;
+  background: #444;
+  color: white;
+  font-size: 15px;
+}
+
+#start {
+  width: 230px;
+  height: 65px;
+  border: 0;
+  border-radius: 15px;
+  font-size: 23px;
+  background: white;
+  color: #111;
+}
+
+#timer {
+  font-size: 25px;
+  margin-top: 5px;
+}
+
+.shake {
+  animation: shake 0.2s;
+}
+
+@keyframes shake {
+  0% { transform: translate(0); }
+  25% { transform: translate(8px, -5px); }
+  50% { transform: translate(-8px, 5px); }
+  75% { transform: translate(5px, 5px); }
+  100% { transform: translate(0); }
+}
+
+.flash {
+  background: #eee !important;
+}
+
+#ending {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: #111;
+  z-index: 10;
+  padding-top: 120px;
+}
+
+#ending h2 {
+  font-size: 42px;
+}
+
+#restart {
+  width: 220px;
+  height: 60px;
+  border: 0;
+  border-radius: 14px;
+  font-size: 22px;
+}
+</style>
 </head>
 
 <body>
 
-  <h1>DON'T PRESS IT</h1>
+<h1>DON'T PRESS IT</h1>
 
-  <div id="message">
-    Whatever you do...<br>
-    DON'T PRESS THE BUTTON.
-  </div>
+<div id="message">
+  Whatever you do...<br>
+  DON'T PRESS THE BUTTON.
+</div>
 
-  <button id="button">DON'T</button>
+<div id="stats">
+  Stage: <span id="stage">0</span>
+  &nbsp; | &nbsp;
+  Presses: <span id="presses">0</span>
+  &nbsp; | &nbsp;
+  Lives: <span id="lives">3</span>
+</div>
 
-  <div id="counter">
-    Presses: 0
-  </div>
+<div id="timer"></div>
 
-  <script>
+<div id="game">
 
-    let presses = 0;
+  <button id="mainButton">DON'T</button>
 
-    const button = document.getElementById("button");
-    const message = document.getElementById("message");
-    const counter = document.getElementById("counter");
+</div>
 
-    button.addEventListener("click", function() {
+<div id="ending">
+  <h2 id="endingTitle"></h2>
+  <p id="endingText"></p>
+  <button id="restart">PLAY AGAIN</button>
+</div>
 
-      presses++;
+<script>
 
-      counter.textContent = "Presses: " + presses;
+const mainButton = document.getElementById("mainButton");
+const message = document.getElementById("message");
+const stageText = document.getElementById("stage");
+const pressesText = document.getElementById("presses");
+const livesText = document.getElementById("lives");
+const timerText = document.getElementById("timer");
+const game = document.getElementById("game");
 
-      if (presses === 1) {
-        message.innerHTML = "I TOLD YOU NOT TO.";
+const ending = document.getElementById("ending");
+const endingTitle = document.getElementById("endingTitle");
+const endingText = document.getElementById("endingText");
+const restart = document.getElementById("restart");
+
+let stage = 0;
+let presses = 0;
+let lives = 3;
+let timer = null;
+let timeLeft = 0;
+let playing = false;
+
+function startGame() {
+
+  stage = 1;
+  presses = 0;
+  lives = 3;
+  playing = true;
+
+  ending.style.display = "none";
+
+  updateStats();
+  setupStage();
+
+}
+
+function updateStats() {
+
+  stageText.textContent = stage;
+  pressesText.textContent = presses;
+  livesText.textContent = lives;
+
+}
+
+function setupStage() {
+
+  clearInterval(timer);
+
+  document.querySelectorAll(".fake").forEach(x => x.remove());
+
+  mainButton.style.position = "absolute";
+  mainButton.style.width = "210px";
+  mainButton.style.height = "210px";
+  mainButton.style.left = "50%";
+  mainButton.style.top = "180px";
+  mainButton.style.transform = "translateX(-50%)";
+  mainButton.textContent = "DON'T";
+
+  if (stage === 1) {
+
+    message.innerHTML = "Stage 1<br>Surely you won't press it.";
+
+  }
+
+  if (stage === 2) {
+
+    message.innerHTML = "Stage 2<br>Okay... you pressed it.";
+
+    mainButton.textContent = "PRESS";
+
+  }
+
+  if (stage === 3) {
+
+    message.innerHTML = "Stage 3<br>The button is getting nervous.";
+
+    mainButton.style.width = "150px";
+    mainButton.style.height = "150px";
+
+  }
+
+  if (stage === 4) {
+
+    message.innerHTML = "Stage 4<br>Find the real button.";
+
+    createFakeButtons();
+
+  }
+
+  if (stage === 5) {
+
+    message.innerHTML = "Stage 5<br>You have 8 seconds.";
+
+    timeLeft = 8;
+    timerText.textContent = "TIME: " + timeLeft;
+
+    timer = setInterval(() => {
+
+      timeLeft--;
+
+      timerText.textContent = "TIME: " + timeLeft;
+
+      if (timeLeft <= 0) {
+        clearInterval(timer);
+        loseLife();
       }
 
-      if (presses === 2) {
-        message.innerHTML = "Seriously. Stop.";
+    }, 1000);
+
+  }
+
+  if (stage === 6) {
+
+    message.innerHTML = "Stage 6<br>DON'T trust the button.";
+
+    mainButton.textContent = "DON'T";
+    mainButton.style.background = "#222";
+    mainButton.style.color = "white";
+
+  }
+
+  if (stage === 7) {
+
+    message.innerHTML = "Stage 7<br>Last stage... probably.";
+
+    mainButton.style.width = "100px";
+    mainButton.style.height = "100px";
+    mainButton.style.fontSize = "16px";
+
+  }
+
+  updateStats();
+
+}
+
+function pressMainButton() {
+
+  if (!playing) return;
+
+  presses++;
+  updateStats();
+
+  document.body.classList.add("shake");
+
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+  }, 200);
+
+  if (stage === 1) {
+
+    message.innerHTML = "I TOLD YOU NOT TO.";
+
+  }
+
+  else if (stage === 2) {
+
+    message.innerHTML = "Again? Really?";
+
+  }
+
+  else if (stage === 3) {
+
+    message.innerHTML = "It's smaller now.";
+
+  }
+
+  else if (stage === 4) {
+
+    message.innerHTML = "You found the real one.";
+
+  }
+
+  else if (stage === 5) {
+
+    clearInterval(timer);
+    timerText.textContent = "";
+    message.innerHTML = "You made it in time.";
+
+  }
+
+  else if (stage === 6) {
+
+    message.innerHTML = "I warned you.";
+
+    mainButton.style.transform =
+      "translateX(-50%) rotate(180deg)";
+
+  }
+
+  else if (stage === 7) {
+
+    winGame();
+    return;
+
+  }
+
+  setTimeout(() => {
+
+    if (stage < 7) {
+
+      stage++;
+      setupStage();
+
+    }
+
+  }, 700);
+
+}
+
+function createFakeButtons() {
+
+  const positions = [
+
+    ["10%", "100px"],
+    ["70%", "120px"],
+    ["20%", "300px"],
+    ["75%", "310px"]
+
+  ];
+
+  positions.forEach(pos => {
+
+    const fake = document.createElement("button");
+
+    fake.className = "fake";
+    fake.textContent = "PRESS";
+    fake.style.left = pos[0];
+    fake.style.top = pos[1];
+
+    fake.onclick = () => {
+
+      lives--;
+
+      updateStats();
+
+      message.innerHTML = "NOPE. FAKE BUTTON.";
+
+      if (lives <= 0) {
+        loseGame();
       }
 
-      if (presses === 3) {
-        message.innerHTML = "Why are you still doing this?";
-      }
+    };
 
-      if (presses === 4) {
-        button.textContent = "STOP";
-        message.innerHTML = "Okay. Last warning.";
-      }
+    game.appendChild(fake);
 
-      if (presses === 5) {
-        button.style.transform = "scale(0.7)";
-        message.innerHTML = "You really don't listen.";
-      }
+  });
 
-    });
+}
 
-  </script>
+function loseLife() {
+
+  lives--;
+  updateStats();
+
+  if (lives <= 0) {
+
+    loseGame();
+
+  } else {
+
+    message.innerHTML =
+      "You ran out of time.<br>One life lost.";
+
+    stage++;
+
+    setTimeout(setupStage, 900);
+
+  }
+
+}
+
+function winGame() {
+
+  playing = false;
+  clearInterval(timer);
+
+  ending.style.display = "block";
+
+  endingTitle.textContent = "YOU DID IT.";
+
+  endingText.innerHTML =
+    "You pressed the button " +
+    presses +
+    " times.<br><br>" +
+    "But there's something you haven't found yet...";
+
+}
+
+function loseGame() {
+
+  playing = false;
+  clearInterval(timer);
+
+  ending.style.display = "block";
+
+  endingTitle.textContent = "GAME OVER";
+
+  endingText.textContent =
+    "You couldn't resist the button.";
+
+}
+
+mainButton.onclick = pressMainButton;
+
+restart.onclick = startGame;
+
+startGame();
+
+</script>
 
 </body>
 </html>
-
